@@ -13,6 +13,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<AlertaService>();
 builder.Services.AddSingleton<SimuladorService>();
 
+// Telegram
+builder.Services.AddSingleton<TelegramEmisorService>();
+builder.Services.AddSingleton<TelegramLectorService>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<TelegramLectorService>());
+
 // Controllers (enums como string en JSON)
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
