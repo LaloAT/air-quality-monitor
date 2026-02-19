@@ -1,5 +1,8 @@
+using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using AirQualityApi.Data;
 using AirQualityApi.Services;
 
@@ -17,6 +20,24 @@ builder.Services.AddSingleton<SimuladorService>();
 builder.Services.AddSingleton<TelegramEmisorService>();
 builder.Services.AddSingleton<TelegramLectorService>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<TelegramLectorService>());
+
+// JWT Authentication
+var jwtSecret = builder.Configuration["Auth:JwtSecret"]!;
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "AirQualityApi",
+            ValidAudience = "AirQualityApi",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
+        };
+    });
+builder.Services.AddAuthorization();
 
 // Controllers (enums como string en JSON)
 builder.Services.AddControllers()
@@ -51,6 +72,9 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseCors();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AirQualityApi.Data;
@@ -8,6 +9,7 @@ namespace AirQualityApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class MedicionesController : ControllerBase
 {
     private readonly AppDbContext _db;
