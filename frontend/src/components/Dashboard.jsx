@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { removeToken } from '../services/auth';
-import { getUltimaMedicion } from '../services/api';
+import { getUltimaMedicion, simularHistorial } from '../services/api';
 import GaugeVelocimetro from './GaugeVelocimetro';
+import SelectorRango from './SelectorRango';
+import GraficaHistorial from './GraficaHistorial';
 
 const GAUGE_CONFIG = [
   {
@@ -52,6 +54,8 @@ function estadoColor(estado) {
 export default function Dashboard() {
   const [ultima, setUltima] = useState(null);
   const [error, setError] = useState('');
+  const [horas, setHoras] = useState(24);
+  const [generando, setGenerando] = useState(false);
   const navigate = useNavigate();
 
   const fetchUltima = async () => {
@@ -154,13 +158,27 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Charts placeholder */}
+        {/* Historial */}
         <section>
-          <h2 className="text-lg font-semibold text-gray-700 mb-3">Historial</h2>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-            <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-              <span className="text-gray-400">Gráfica de historial — Fase 7</span>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-gray-700">Historial</h2>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={async () => {
+                  setGenerando(true);
+                  try { await simularHistorial(288); } catch {}
+                  setGenerando(false);
+                }}
+                disabled={generando}
+                className="text-xs px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition disabled:opacity-50"
+              >
+                {generando ? 'Generando...' : 'Simular historial'}
+              </button>
+              <SelectorRango horasActual={horas} onChange={setHoras} />
             </div>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <GraficaHistorial horas={horas} />
           </div>
         </section>
 
