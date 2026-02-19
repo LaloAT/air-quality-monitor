@@ -11,6 +11,7 @@ function formatFecha(timestamp) {
 
 export default function TablaAlertas() {
   const [alertas, setAlertas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetch = async () => {
@@ -18,12 +19,21 @@ export default function TablaAlertas() {
         const data = await getAlertas(24);
         setAlertas(data.slice(0, 20));
       } catch {}
+      setLoading(false);
     };
 
     fetch();
     const interval = setInterval(fetch, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  if (loading) {
+    return (
+      <div className="h-48 flex items-center justify-center text-gray-400 text-sm">
+        Cargando alertas...
+      </div>
+    );
+  }
 
   if (alertas.length === 0) {
     return (
@@ -46,10 +56,14 @@ export default function TablaAlertas() {
         </thead>
         <tbody>
           {alertas.map((a) => (
-            <tr key={a.id} className="border-b border-gray-50 hover:bg-red-50 transition">
+            <tr key={a.id} className="border-b border-gray-50 hover:bg-red-50 transition-colors duration-150">
               <td className="py-2 text-gray-500 text-xs">{formatFecha(a.timestamp)}</td>
               <td className="py-2 font-medium text-gray-700">{a.variable}</td>
-              <td className="py-2 text-right text-red-600 font-semibold">{a.valor}</td>
+              <td className="py-2 text-right">
+                <span className="text-red-600 font-semibold bg-red-50 px-1.5 py-0.5 rounded">
+                  {a.valor}
+                </span>
+              </td>
               <td className="py-2 text-right text-gray-400">{a.umbral}</td>
             </tr>
           ))}
