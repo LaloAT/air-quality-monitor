@@ -5,6 +5,9 @@ import { getUltimaMedicion, simularHistorial } from '../services/api';
 import GaugeVelocimetro from './GaugeVelocimetro';
 import SelectorRango from './SelectorRango';
 import GraficaHistorial from './GraficaHistorial';
+import MapaCalor from './MapaCalor';
+import TablaAlertas from './TablaAlertas';
+import PanelControl from './PanelControl';
 
 const GAUGE_CONFIG = [
   {
@@ -182,26 +185,30 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Alerts & Heatmap placeholder */}
+        {/* Mapa de calor + Alertas */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <section>
             <h2 className="text-lg font-semibold text-gray-700 mb-3">Mapa de calor</h2>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-              <div className="h-48 bg-gray-50 rounded-lg flex items-center justify-center">
-                <span className="text-gray-400">Heatmap — Fase 8</span>
-              </div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+              <MapaCalor />
             </div>
           </section>
 
           <section>
             <h2 className="text-lg font-semibold text-gray-700 mb-3">Alertas recientes</h2>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-              <div className="h-48 bg-gray-50 rounded-lg flex items-center justify-center">
-                <span className="text-gray-400">Tabla de alertas — Fase 8</span>
-              </div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+              <TablaAlertas />
             </div>
           </section>
         </div>
+
+        {/* Panel de control */}
+        <section>
+          <h2 className="text-lg font-semibold text-gray-700 mb-3">Panel de control</h2>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <PanelControl />
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
