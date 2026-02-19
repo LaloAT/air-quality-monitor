@@ -1,5 +1,7 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using AirQualityApi.Data;
+using AirQualityApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,8 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Controllers
-builder.Services.AddControllers();
+// Servicios de negocio
+builder.Services.AddScoped<AlertaService>();
+builder.Services.AddSingleton<SimuladorService>();
+
+// Controllers (enums como string en JSON)
+builder.Services.AddControllers()
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 // Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
